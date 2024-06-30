@@ -120,7 +120,7 @@ Alphabet + blocklist:
 
 ```sql
 SELECT sqids_encode('k3G7QAe51FCsPW92uEOyq4Bg6Sp8YzVTmnU0liwDdHXLajZrfxNhobJIRcMvKt', array['XRKUdQ'], 1, 2, 3); -- WyXQfF
-SELECT sqids_decode('k3G7QAe51FCsPW92uEOyq4Bg6Sp8YzVTmnU0liwDdHXLajZrfxNhobJIRcMvKt', array['86Rf07'], 'WyXQfF'); -- {1,2,3}
+SELECT sqids_decode('k3G7QAe51FCsPW92uEOyq4Bg6Sp8YzVTmnU0liwDdHXLajZrfxNhobJIRcMvKt', array['XRKUdQ'], 'WyXQfF'); -- {1,2,3}
 ```
 
 Min length + blocklist:
