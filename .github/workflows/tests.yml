@@ -28,6 +28,7 @@ jobs:
       - name: Install pgrx
         run: |
           cargo install --locked cargo-pgrx || true
+          cargo pgrx init
       - name: Lint
         run: |
           rustfmt **/*.rs
