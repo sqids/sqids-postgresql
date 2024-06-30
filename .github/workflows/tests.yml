@@ -25,6 +25,9 @@ jobs:
             target/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: ${{ runner.os }}-cargo-
+      - name: Install pgrx
+        run: |
+          cargo install --locked cargo-pgrx || true
       - name: Lint
         run: |
           rustfmt **/*.rs
