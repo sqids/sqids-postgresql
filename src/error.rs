@@ -10,6 +10,7 @@ pub enum Error {
 	NegativeNumbers,
 }
 
+#[derive(Debug)]
 pub enum PgError {
 	SqidsError(sqids::Error),
 	CustomError(Error),
