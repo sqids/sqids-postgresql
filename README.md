@@ -71,7 +71,7 @@ Not good for:
 
     - For Linux: `libpg_sqids.so`
     - For macOS: `libpg_sqids.dylib`
-    - For Windows: `libpg_sqids.dll`
+    - For Windows: `pg_sqids.dll`
 
 1. Install the extension:
 
