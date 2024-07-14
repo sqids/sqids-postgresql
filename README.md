@@ -29,7 +29,7 @@ Not good for:
 
 ## 🚀 Getting started
 
-### Debugging
+### Development
 
 1. [Install Rust](https://www.rust-lang.org/) if you don't have it.
 
@@ -67,7 +67,11 @@ Not good for:
     cargo pgrx package
     ```
 
-1. Extension files should be in `target/release`
+1. Extension file should be in `target/release`
+
+    - For Linux: `libpg_sqids.so`
+    - For macOS: `libpg_sqids.dylib`
+    - For Windows: `libpg_sqids.dll`
 
 1. Install the extension:
 
