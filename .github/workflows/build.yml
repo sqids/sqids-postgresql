@@ -19,39 +19,6 @@ jobs:
           override: true
           components: rustfmt, clippy
 
-      - name: Install ICU (Ubuntu)
-        if: matrix.os == 'ubuntu-latest'
-        run: sudo apt-get install -y libicu-dev
-
-      - name: Install ICU (macOS)
-        if: matrix.os == 'macos-latest'
-        run: brew install icu4c
-
-      - name: Cache vcpkg
-        uses: actions/cache@v3
-        with:
-          path: ${{ github.workspace }}/vcpkg
-          key: vcpkg-${{ runner.os }}-${{ hashFiles('**/vcpkg.json') }}
-
-      - name: Setup vcpkg
-        uses: lukka/run-vcpkg@v11
-        timeout-minutes: 15
-        with:
-          vcpkgDirectory: '${{ github.workspace }}/vcpkg'
-          vcpkgGitCommitId: '501db0f17ef6df184fcdbfbe0f87cde2313b6ab1'
-          runVcpkgInstall: true
-
-      - name: Set VCPKG_ROOT
-        run: echo "VCPKG_ROOT=${{ github.workspace }}/vcpkg" >> $GITHUB_ENV
-
-      - name: Install ICU (Windows)
-        if: matrix.os == 'windows-latest'
-        run: ${{ github.workspace }}/vcpkg/vcpkg install icu:x64-windows
-
-      - name: Set up ICU path (Windows)
-        if: matrix.os == 'windows-latest'
-        run: echo "${{ github.workspace }}/vcpkg/installed/x64-windows/bin" >> $env:GITHUB_PATH
-
       - name: Set up cargo cache
         uses: actions/cache@v3
         continue-on-error: false
@@ -78,8 +45,7 @@ jobs:
       - name: Build Extension
         run: cargo pgrx package
         env:
-          ICU_VERSION: 74
-          VCPKGRS_DYNAMIC: 1
+          PGRX_NO_ICU: 1
 
       - name: Upload Extension Artifact
         uses: actions/upload-artifact@v3
@@ -105,6 +71,3 @@ jobs:
           profile: minimal
           toolchain: stable
           override: true
-
-      - name: Install ICU
-        run: sudo apt-get install -y libicu-dev
