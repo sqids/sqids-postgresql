@@ -19,6 +19,20 @@ jobs:
           override: true
           components: rustfmt, clippy
 
+      - name: Install ICU (Ubuntu)
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo apt-get install -y libicu-dev
+
+      - name: Install ICU (macOS)
+        if: matrix.os == 'macos-latest'
+        run: brew install icu4c
+
+      - name: Install ICU (Windows)
+        if: matrix.os == 'windows-latest'
+        run: |
+          choco install icu4c
+          echo "C:\Program Files\icu4c\bin" >> $GITHUB_PATH
+
       - name: Set up cargo cache
         uses: actions/cache@v3
         continue-on-error: false
@@ -44,6 +58,8 @@ jobs:
 
       - name: Build Extension
         run: cargo pgrx package
+        env:
+          ICU_VERSION: 74
 
       - name: Upload Extension Artifact
         uses: actions/upload-artifact@v3
@@ -69,3 +85,6 @@ jobs:
           profile: minimal
           toolchain: stable
           override: true
+
+      - name: Install ICU
+        run: sudo apt-get install -y libicu-dev
