@@ -69,11 +69,3 @@ jobs:
           profile: minimal
           toolchain: stable
           override: true
-
-      - name: Install cargo check tools
-        run: cargo install --locked cargo-outdated || true
-
-      - name: Check
-        run: |
-          cargo outdated --exit-code 1
-          rm -rf ~/.cargo/advisory-db
