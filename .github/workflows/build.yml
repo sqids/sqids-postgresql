@@ -21,7 +21,7 @@ jobs:
 
       - name: Install pkg-config (macOS)
         if: runner.os == 'macOS'
-        run: brew install pkg-config
+        run: brew install git icu4c pkg-config
 
       - name: Cache Rust dependencies
         uses: actions/cache@v3
