@@ -48,6 +48,7 @@ jobs:
           cargo pgrx init
         env:
           CARGO_HTTP_TIMEOUT: 300
+          PKG_CONFIG_PATH: /opt/homebrew/opt/icu4c/lib/pkgconfig
 
       - name: Lint
         run: |
