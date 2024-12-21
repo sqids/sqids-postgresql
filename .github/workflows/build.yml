@@ -27,11 +27,18 @@ jobs:
         if: matrix.os == 'macos-latest'
         run: brew install icu4c
 
+      - name: Install vcpkg (Windows)
+        if: matrix.os == 'windows-latest'
+        uses: lukka/run-vcpkg@v7
+        with:
+          vcpkgGitCommitId: 'a42af01b72c28a8e1d7b48107b33e4f286a55ef6'
+
       - name: Install ICU (Windows)
         if: matrix.os == 'windows-latest'
         run: |
-          choco install icu4c
-          echo "C:\Program Files\icu4c\bin" >> $GITHUB_PATH
+          vcpkg install icu:x64-windows
+          vcpkg integrate install
+          echo "C:\vcpkg\installed\x64-windows\bin" >> $env:GITHUB_PATH
 
       - name: Set up cargo cache
         uses: actions/cache@v3
@@ -60,6 +67,7 @@ jobs:
         run: cargo pgrx package
         env:
           ICU_VERSION: 74
+          VCPKGRS_DYNAMIC: 1
 
       - name: Upload Extension Artifact
         uses: actions/upload-artifact@v3
