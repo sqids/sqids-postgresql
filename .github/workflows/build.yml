@@ -44,7 +44,7 @@ jobs:
 
       - name: Install pgrx
         run: |
-          cargo install --locked cargo-pgrx || true
+          cargo install --locked cargo-pgrx --version 0.12.9 || true
           cargo pgrx init
         env:
           CARGO_HTTP_TIMEOUT: 300
