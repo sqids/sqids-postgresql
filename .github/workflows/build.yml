@@ -27,8 +27,15 @@ jobs:
         if: matrix.os == 'macos-latest'
         run: brew install icu4c
 
+      - name: Cache vcpkg
+        uses: actions/cache@v3
+        with:
+          path: ${{ github.workspace }}/vcpkg
+          key: vcpkg-${{ runner.os }}-${{ hashFiles('**/vcpkg.json') }}
+
       - name: Setup vcpkg
         uses: lukka/run-vcpkg@v11
+        timeout-minutes: 15
         with:
           vcpkgDirectory: '${{ github.workspace }}/vcpkg'
           vcpkgGitCommitId: '501db0f17ef6df184fcdbfbe0f87cde2313b6ab1'
