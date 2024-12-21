@@ -1,6 +1,6 @@
 # [Sqids PostgreSQL](https://sqids.org/postgresql)
 
-[![Github Actions](https://img.shields.io/github/actions/workflow/status/sqids/sqids-postgresql/tests.yml)](https://github.com/sqids/sqids-postgresql/actions)
+[![Github Actions](https://img.shields.io/github/actions/workflow/status/sqids/sqids-postgresql/build.yml)](https://github.com/sqids/sqids-postgresql/actions)
 
 [Sqids](https://sqids.org/postgresql) (*pronounced "squids"*) is a small library that lets you **generate unique IDs from numbers**. It's good for link shortening, fast & URL-safe ID generation and decoding back into numbers for quicker database lookups.
 
