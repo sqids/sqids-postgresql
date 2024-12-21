@@ -27,18 +27,16 @@ jobs:
         if: matrix.os == 'macos-latest'
         run: brew install icu4c
 
-      - name: Install vcpkg (Windows)
+      - name: Install vcpkg and ICU (Windows)
         if: matrix.os == 'windows-latest'
-        uses: lukka/run-vcpkg@v7
+        uses: lukka/run-vcpkg@v11
         with:
-          vcpkgGitCommitId: 'a42af01b72c28a8e1d7b48107b33e4f286a55ef6'
+          vcpkgArguments: 'icu:x64-windows'
+          vcpkgDirectory: '${{ github.workspace }}/vcpkg'
 
-      - name: Install ICU (Windows)
+      - name: Set up ICU path (Windows)
         if: matrix.os == 'windows-latest'
-        run: |
-          vcpkg install icu:x64-windows
-          vcpkg integrate install
-          echo "C:\vcpkg\installed\x64-windows\bin" >> $env:GITHUB_PATH
+        run: echo "${{ github.workspace }}/vcpkg/installed/x64-windows/bin" >> $env:GITHUB_PATH
 
       - name: Set up cargo cache
         uses: actions/cache@v3
