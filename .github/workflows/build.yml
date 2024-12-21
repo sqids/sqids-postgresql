@@ -19,6 +19,10 @@ jobs:
           override: true
           components: rustfmt, clippy
 
+      - name: Install pkg-config (macOS)
+        if: runner.os == 'macOS'
+        run: brew install pkg-config
+
       - name: Cache Rust dependencies
         uses: actions/cache@v3
         with:
@@ -52,8 +56,6 @@ jobs:
 
       - name: Build Extension
         run: cargo pgrx package
-        env:
-          PGRX_NO_ICU: 1
 
       - name: Upload Extension Artifact
         uses: actions/upload-artifact@v3
