@@ -15,12 +15,12 @@ pg16 = ["pgrx/pg16", "pgrx-tests/pg16" ]
 pg_test = []
 
 [dependencies]
-pgrx = "0.12.9"
+pgrx = "0.13.1"
 sqids = "0.4.2"
-thiserror = "2.0.8"
+thiserror = "2.0.12"
 
 [dev-dependencies]
-pgrx-tests = "0.12.9"
+pgrx-tests = "0.13.1"
 
 [profile.dev]
 panic = "unwind"

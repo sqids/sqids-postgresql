@@ -44,7 +44,7 @@ jobs:
 
       - name: Install pgrx
         run: |
-          cargo install --locked cargo-pgrx --version 0.12.9 || true
+          cargo install --locked cargo-pgrx --version 0.13.1 || true
           cargo pgrx init
         env:
           CARGO_HTTP_TIMEOUT: 300
@@ -55,7 +55,13 @@ jobs:
           cargo fmt --all -- --check
           cargo clippy --all -- -D warnings
 
-      - name: Build Extension
+      - name: Build Extension (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          cargo pgrx package --target x86_64-pc-windows-msvc
+
+      - name: Build Extension (Other OS)
+        if: runner.os != 'Windows'
         run: cargo pgrx package
 
       - name: Upload Extension Artifact
