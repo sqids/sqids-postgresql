@@ -5,6 +5,13 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
+        include:
+          - os: ubuntu-latest
+            pg-version: 15
+          - os: macos-latest
+            pg-version: 15
+          - os: windows-latest
+            pg-version: 15
     runs-on: ${{ matrix.os }}
     steps:
       - name: Check out
@@ -18,23 +25,26 @@ jobs:
           override: true
           components: rustfmt, clippy
       
-      # OS-specific setup
       - name: Install dependencies (Ubuntu)
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y pkg-config libssl-dev postgresql-server-dev-all
+          sudo apt-get install -y pkg-config libssl-dev
+          sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+          wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+          sudo apt-get update
+          sudo apt-get install -y postgresql-${{ matrix.pg-version }} postgresql-server-dev-${{ matrix.pg-version }}
       
       - name: Install dependencies (macOS)
         if: runner.os == 'macOS'
-        run: brew install git icu4c pkg-config postgresql
+        run: brew install git icu4c pkg-config postgresql@${{ matrix.pg-version }}
       
       - name: Install PostgreSQL (Windows)
         if: runner.os == 'Windows'
         run: |
-          choco install postgresql --params '/Password:postgres' -y
-          echo "C:\Program Files\PostgreSQL\latest\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-          echo "C:\Program Files\PostgreSQL\latest\lib" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          choco install postgresql${{ matrix.pg-version }} --params '/Password:postgres' -y
+          echo "C:\Program Files\PostgreSQL\${{ matrix.pg-version }}\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          echo "C:\Program Files\PostgreSQL\${{ matrix.pg-version }}\lib" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
       
       - name: Cache Rust dependencies
         uses: actions/cache@v3
@@ -51,17 +61,17 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.pgrx
-          key: ${{ runner.os }}-pgrx-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ runner.os }}-pgrx-pg${{ matrix.pg-version }}-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
-            ${{ runner.os }}-pgrx-
+            ${{ runner.os }}-pgrx-pg${{ matrix.pg-version }}-
       
       - name: Install pgrx
         run: |
           cargo install --locked cargo-pgrx --version 0.13.1 || true
-          cargo pgrx init
+          cargo pgrx init --pg${{ matrix.pg-version }}
         env:
           CARGO_HTTP_TIMEOUT: 300
-          PKG_CONFIG_PATH: ${{ runner.os == 'macOS' && '/opt/homebrew/opt/icu4c/lib/pkgconfig' || '' }}
+          PKG_CONFIG_PATH: ${{ runner.os == 'macOS' && '/opt/homebrew/opt/icu4c/lib/pkgconfig:/opt/homebrew/opt/postgresql@15/lib/pkgconfig' || '' }}
       
       - name: Lint
         run: |
@@ -71,35 +81,32 @@ jobs:
       - name: Build Extension (Windows)
         if: runner.os == 'Windows'
         run: |
-          cargo pgrx package --target x86_64-pc-windows-msvc
+          cargo pgrx package --pg-config "C:\Program Files\PostgreSQL\${{ matrix.pg-version }}\bin\pg_config.exe" --target x86_64-pc-windows-msvc
       
       - name: Build Extension (Other OS)
         if: runner.os != 'Windows'
-        run: cargo pgrx package
+        run: cargo pgrx package --pg-config $(which pg_config)
       
       - name: Upload Extension Artifact (Linux)
         if: runner.os == 'Linux'
         uses: actions/upload-artifact@v4
         with:
           name: pg_sqids-${{ runner.os }}
-          path: |
-            target/release/pg_sqids-pg*/lib/pg_sqids.so
+          path: target/release/pg_sqids-pg${{ matrix.pg-version }}/lib/pg_sqids.so
       
       - name: Upload Extension Artifact (macOS)
         if: runner.os == 'macOS'
         uses: actions/upload-artifact@v4
         with:
           name: pg_sqids-${{ runner.os }}
-          path: |
-            target/release/pg_sqids-pg*/lib/pg_sqids.dylib
+          path: target/release/pg_sqids-pg${{ matrix.pg-version }}/lib/pg_sqids.dylib
       
       - name: Upload Extension Artifact (Windows)
         if: runner.os == 'Windows'
         uses: actions/upload-artifact@v4
         with:
           name: pg_sqids-${{ runner.os }}
-          path: |
-            target/release/pg_sqids-pg*/lib/pg_sqids.dll
+          path: target/release/pg_sqids-pg${{ matrix.pg-version }}/lib/pg_sqids.dll
       
       - name: Test
         run: cargo test --all
