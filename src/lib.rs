@@ -6,7 +6,7 @@ use error::PgError;
 mod error;
 mod utils;
 
-pgrx::pg_module_magic!();
+::pgrx::pg_module_magic!();
 
 #[pg_extern(name = "sqids_encode")]
 fn sqids_encode(numbers: VariadicArray<i64>) -> Result<String, PgError> {

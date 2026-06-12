@@ -36,7 +36,7 @@ Not good for:
 1. Install [pgrx](https://github.com/pgcentralfoundation/pgrx?tab=readme-ov-file#getting-started):
 
     ```bash
-    cargo install --locked cargo-pgrx
+    cargo install --locked --version=0.18.1 cargo-pgrx 
     ```
 
 1. Install dependencies and run psql session:
